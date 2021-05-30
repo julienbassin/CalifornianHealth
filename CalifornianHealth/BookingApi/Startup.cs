@@ -90,7 +90,7 @@ namespace BookingApi
             services.AddTransient<IRequestHandler<CreateAppointmentCommand, AppointmentModel>, CreateAppointmentCommandHandler>();
             services.AddTransient<IRequestHandler<UpdateAppointmentCommand, AppointmentModel>, UpdateAppointmentCommandHandler>();
             services.AddTransient<IRequestHandler<GetAppointmentByIdQuery, AppointmentModel>, GetAppointmentByIdQueryHandler>();
-            services.AddTransient<IRequestHandler<GetAppointmentsQuery, List<AppointmentModel>>, GetCustomersQueryHandler>();
+            services.AddTransient<IRequestHandler<GetAppointmentsQuery, List<AppointmentModel>>, GetAppointmentsQueryHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
