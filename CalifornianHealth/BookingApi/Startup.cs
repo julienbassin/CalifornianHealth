@@ -1,12 +1,19 @@
 using BookingApi.Messaging.Send.Options.v1;
+using BookingApi.Messaging.Send.Sender.v1;
+using BookingApi.Service.v1.Command;
+using BookingApi.Service.v1.Query;
+using CalendarApi.Domain.Models.Entities;
 using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -54,6 +61,36 @@ namespace BookingApi
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = actionContext =>
+                {
+                    var actionExecutingContext =
+                        actionContext as ActionExecutingContext;
+
+                    if (actionContext.ModelState.ErrorCount > 0
+                        && actionExecutingContext?.ActionArguments.Count == actionContext.ActionDescriptor.Parameters.Count)
+                    {
+                        return new UnprocessableEntityObjectResult(actionContext.ModelState);
+                    }
+
+                    return new BadRequestObjectResult(actionContext.ModelState);
+                };
+            });
+
+            services.AddMediatR(Assembly.GetExecutingAssembly());
+            bool.TryParse(Configuration["BaseServiceSettings:UserabbitMq"], out var useRabbitMq);
+
+            if (useRabbitMq)
+            {
+                services.AddSingleton<IAppointmentUpdateSender, AppointmentUpdateSender>();
+            }
+
+            services.AddTransient<IRequestHandler<CreateAppointmentCommand, AppointmentModel>, CreateAppointmentCommandHandler>();
+            services.AddTransient<IRequestHandler<UpdateAppointmentCommand, AppointmentModel>, UpdateAppointmentCommandHandler>();
+            services.AddTransient<IRequestHandler<GetAppointmentByIdQuery, AppointmentModel>, GetAppointmentByIdQueryHandler>();
+            services.AddTransient<IRequestHandler<GetAppointmentsQuery, List<AppointmentModel>>, GetCustomersQueryHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
