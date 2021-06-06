@@ -51,7 +51,7 @@ namespace BookingApi.Controllers.v1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [HttpPost]
-        public async Task<ActionResult<AppointmentModel>> SaveAppointment(AppointmentDTO appointmentDTO)
+        public async Task<ActionResult<AppointmentModel>> SaveBooking (AppointmentDTO appointmentDTO)
         {
             try
             {

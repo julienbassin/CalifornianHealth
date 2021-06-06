@@ -56,28 +56,24 @@ namespace BookingApi
                         Url = new Uri("https://github.com/julienbassin")
                     }
                 });
-
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
             });
 
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.InvalidModelStateResponseFactory = actionContext =>
-                {
-                    var actionExecutingContext =
-                        actionContext as ActionExecutingContext;
+            //services.Configure<ApiBehaviorOptions>(options =>
+            //{
+            //    options.InvalidModelStateResponseFactory = actionContext =>
+            //    {
+            //        var actionExecutingContext =
+            //            actionContext as ActionExecutingContext;
 
-                    if (actionContext.ModelState.ErrorCount > 0
-                        && actionExecutingContext?.ActionArguments.Count == actionContext.ActionDescriptor.Parameters.Count)
-                    {
-                        return new UnprocessableEntityObjectResult(actionContext.ModelState);
-                    }
+            //        if (actionContext.ModelState.ErrorCount > 0
+            //            && actionExecutingContext?.ActionArguments.Count == actionContext.ActionDescriptor.Parameters.Count)
+            //        {
+            //            return new UnprocessableEntityObjectResult(actionContext.ModelState);
+            //        }
 
-                    return new BadRequestObjectResult(actionContext.ModelState);
-                };
-            });
+            //        return new BadRequestObjectResult(actionContext.ModelState);
+            //    };
+            //});
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
             bool.TryParse(Configuration["BaseServiceSettings:UserabbitMq"], out var useRabbitMq);

@@ -1,6 +1,11 @@
+using CalendarApi.Data.Database;
+using CalendarApi.Data.Repository;
+using CalendarApi.Messaging.Receive.Options.v1;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,10 +31,48 @@ namespace CalendarApi
         public void ConfigureServices(IServiceCollection services)
         {
 
+            var serviceClientSettingsConfig = Configuration.GetSection("RabbitMq");
+            var serviceClientSettings = serviceClientSettingsConfig.Get<RabbitMqConfiguration>();
+            services.Configure<RabbitMqConfiguration>(serviceClientSettingsConfig);
+
+            bool.TryParse(Configuration["BaseServiceSettings:UseInMemoryDatabase"], out var useInMemory);
+
+            if (!useInMemory)
+            {
+                services.AddDbContext<CalendarDBContext>(options =>
+                {
+                    options.UseSqlServer(Configuration.GetConnectionString("CalendarDbConnection"));
+                });
+            }
+            else
+            {
+                services.AddDbContext<CalendarDBContext>(options => options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
+            }
+
+            // DBContext
+            services.AddTransient<CalendarDBContext>();
+
+            // Data Repository
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            services.AddMediatR(typeof(Startup));
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CalendarApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Calendar Api",
+                    Description = "A simple API to create or update appointment",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Julien Bassin",
+                        Email = "julienbassin@outlook.com",
+                        Url = new Uri("https://github.com/julienbassin")
+                    }
+                });
             });
         }
 
