@@ -18,7 +18,7 @@ namespace CalendarApi.Data.Config
 
             builder
                 .Property(a => a.SelectedDate)
-                .HasColumnName("StartTime")
+                .HasColumnName("SelectedDate")
                 .HasColumnType("date")
                 .IsRequired();
 

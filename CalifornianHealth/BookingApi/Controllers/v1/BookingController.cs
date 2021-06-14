@@ -17,13 +17,12 @@ namespace BookingApi.Controllers.v1
     [ApiController]
     public class BookingController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly IMediator _mediator;
-
-        public BookingController(IMapper mapper, IMediator mediator)
+        public List<AppointmentModel> _Appointments;
+        public BookingController( IMediator mediator)
         {
-            _mapper = mapper;
             _mediator = mediator;
+            _Appointments = new List<AppointmentModel>();
         }
 
         /// <summary>
@@ -39,7 +38,39 @@ namespace BookingApi.Controllers.v1
         {
             try
             {
-                return await _mediator.Send(new GetAppointmentsQuery());
+                var allAppointments = await _mediator.Send(new GetAppointmentsQuery());
+                
+                foreach (var currentAppointment in allAppointments)
+                {
+                    var consultant = await _mediator.Send(new GetConsultantByIdQuery
+                    {
+                        ConsultantId = (int)currentAppointment.ConsultantId                        
+                    });
+
+                    var patient = await _mediator.Send(new GetPatientByIdQuery 
+                    {                     
+                        PatientId = (int)currentAppointment.PatientId
+                    });
+
+                    var timeslot = await _mediator.Send(new GetTimeSlotByIdQuery 
+                    { 
+                        TimeSlotId = (int)currentAppointment.TimeSlotId
+                    
+                    });
+
+                    _Appointments.Add(new AppointmentModel 
+                    { 
+                         Id = currentAppointment.Id,
+                         SelectedDate = currentAppointment.SelectedDate,
+                         ConsultantId = currentAppointment.ConsultantId,
+                         Consultant = consultant,
+                         PatientId = currentAppointment.PatientId,
+                         Patient = patient,
+                         TimeSlotId = currentAppointment.TimeSlotId,
+                         TimeSlot = timeslot                         
+                    });
+                }
+                return _Appointments;
             }
             catch (Exception ex)
             {
@@ -51,14 +82,49 @@ namespace BookingApi.Controllers.v1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [HttpPost]
-        public async Task<ActionResult<AppointmentModel>> SaveBooking (AppointmentDTO appointmentDTO)
+        public async Task<ActionResult<AppointmentDTO>> SendBooking (AppointmentDTO appointmentDTO)
         {
             try
             {
+
                 return await _mediator.Send(new CreateAppointmentCommand
                 {
-                    Appointment = _mapper.Map<AppointmentModel>(appointmentDTO)
+                    Appointment = appointmentDTO
                 });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [HttpGet("Consultants")]
+        public async Task<ActionResult<List<ConsultantModel>>> GetConsultants()
+        {
+            try
+            {
+                var consultants = await _mediator.Send(new GetConsultantsQuery());
+                return consultants;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [HttpGet("Patients")]
+        public async Task<ActionResult<List<PatientModel>>> GetPatients()
+        {
+            try
+            {
+                var patients = await _mediator.Send(new GetPatientsQuery());
+                return patients;
             }
             catch (Exception ex)
             {

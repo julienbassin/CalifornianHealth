@@ -24,12 +24,12 @@ namespace CalendarApi.Data.Repository
             return await dbContext.Set<TEntity>().FindAsync(id);
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
+        public virtual async Task<List<TEntity>> GetAllAsync()
         {
             return await dbContext.Set<TEntity>().ToListAsync();
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAllAsync(
+        public virtual async Task<List<TEntity>> GetAllAsync(
             Expression<Func<TEntity, bool>> filter)
         {
             IQueryable<TEntity> query = dbContext.Set<TEntity>();

@@ -10,17 +10,17 @@ using System.Threading.Tasks;
 
 namespace BookingApi.Service.v1.Query
 {
-    public class GetAppointmentsQueryHandler : IRequestHandler<GetAppointmentsQuery, List<AppointmentModel>>
+    public class GetPatientByIdQueryHandler : IRequestHandler<GetPatientByIdQuery, PatientModel>
     {
         public readonly IUnitOfWork _unitOfWork;
-        public GetAppointmentsQueryHandler(IUnitOfWork unitOfWork)
+        public GetPatientByIdQueryHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<AppointmentModel>> Handle(GetAppointmentsQuery request, CancellationToken cancellationToken)
+        public Task<PatientModel> Handle(GetPatientByIdQuery request, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.appointmentRepository.GetAllAsync();
+            return _unitOfWork.patientRepository.GetByIdAsync(request.PatientId);
         }
     }
 }

@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CalendarApi.Data\CalendarApi.Data.csproj" />
     <ProjectReference Include="..\CalendarApi.Domain\CalendarApi.Domain.csproj" />
   </ItemGroup>
 

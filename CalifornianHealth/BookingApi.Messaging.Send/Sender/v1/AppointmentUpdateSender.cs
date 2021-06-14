@@ -47,7 +47,7 @@ namespace BookingApi.Messaging.Send.Sender.v1
             }
         }
 
-        public void SendBooking(AppointmentDTO appointmentDTO)
+        public void Send(AppointmentDTO appointmentDTO)
         {
             if (ConnectionExists())
             {

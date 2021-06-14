@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,8 @@ namespace CalendarApi.Domain.Models.DTOs
         public int SelectedPatientId { get; set; }
 
         public DateTime SelectedDate { get; set; }
-        public string SelectedTime { get; set; }
+
+        public DateTime SelectedTime { get; set; } 
 
         public List<ConsultantDTO> Consultants { get; private set; }
 

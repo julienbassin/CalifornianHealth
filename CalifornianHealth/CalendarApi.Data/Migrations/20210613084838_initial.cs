@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CalendarApi.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -66,7 +66,7 @@ namespace CalendarApi.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StartTime = table.Column<DateTime>(type: "date", nullable: false),
+                    SelectedDate = table.Column<DateTime>(type: "date", nullable: false),
                     ConsultantId = table.Column<int>(type: "int", nullable: true),
                     PatientId = table.Column<int>(type: "int", nullable: true),
                     TimeSlotId = table.Column<int>(type: "int", nullable: true)
@@ -92,9 +92,9 @@ namespace CalendarApi.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointment_ConsultantId_TimeSlotId_StartTime",
+                name: "IX_Appointment_ConsultantId_TimeSlotId_SelectedDate",
                 table: "Appointment",
-                columns: new[] { "ConsultantId", "TimeSlotId", "StartTime" },
+                columns: new[] { "ConsultantId", "TimeSlotId", "SelectedDate" },
                 unique: true,
                 filter: "[ConsultantId] IS NOT NULL AND [TimeSlotId] IS NOT NULL");
 

@@ -1,4 +1,5 @@
-﻿using CalendarApi.Domain.Models.Entities;
+﻿using CalendarApi.Data.Repository;
+using CalendarApi.Domain.Models.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,14 +12,14 @@ namespace BookingApi.Service.v1.Query
 {
     public class GetAppointmentByIdQueryHandler : IRequestHandler<GetAppointmentByIdQuery, AppointmentModel>
     {
-        // Implement IUnitOfWork 
-        public GetAppointmentByIdQueryHandler()
+        public readonly IUnitOfWork _unitOfWork;
+        public GetAppointmentByIdQueryHandler(IUnitOfWork unitOfWork)
         {
-
+            _unitOfWork = unitOfWork;
         }
         public Task<AppointmentModel> Handle(GetAppointmentByIdQuery request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return _unitOfWork.appointmentRepository.GetByIdAsync(request.Id);
         }
     }
 }

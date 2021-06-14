@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace BookingApi.Service.v1.Command
 {
-    public class UpdateAppointmentCommand : IRequest<AppointmentModel>
+    public class UpdateAppointmentCommand : IRequest<AppointmentDTO>
     {
-        public AppointmentModel Appointment { get; set; }
+        public AppointmentDTO Appointment { get; set; }
     }
 }

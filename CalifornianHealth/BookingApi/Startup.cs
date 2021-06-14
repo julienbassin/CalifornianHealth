@@ -2,12 +2,16 @@ using BookingApi.Messaging.Send.Options.v1;
 using BookingApi.Messaging.Send.Sender.v1;
 using BookingApi.Service.v1.Command;
 using BookingApi.Service.v1.Query;
+using CalendarApi.Data.Database;
+using CalendarApi.Data.Repository;
+using CalendarApi.Domain.Models.DTOs;
 using CalendarApi.Domain.Models.Entities;
 using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,6 +37,27 @@ namespace BookingApi
         {
             services.AddHealthChecks();
             services.AddOptions();
+
+            bool.TryParse(Configuration["BaseServiceSettings:UseInMemoryDatabase"], out var useInMemory);
+
+            if (!useInMemory)
+            {
+                services.AddDbContext<CalendarDBContext>(options =>
+                {
+                    options.UseSqlServer(Configuration.GetConnectionString("CalendarDbConnection"));
+                });
+            }
+            else
+            {
+                services.AddDbContext<CalendarDBContext>(options => options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
+            }
+
+            // DBContext
+            services.AddTransient<CalendarDBContext>();
+
+            // unitOfWork layer
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             var serviceClientSettingsConfig = Configuration.GetSection("RabbitMq");
             services.Configure<RabbitMqConfiguration>(serviceClientSettingsConfig);
@@ -83,10 +108,16 @@ namespace BookingApi
                 services.AddSingleton<IAppointmentUpdateSender, AppointmentUpdateSender>();
             }
 
-            services.AddTransient<IRequestHandler<CreateAppointmentCommand, AppointmentModel>, CreateAppointmentCommandHandler>();
-            services.AddTransient<IRequestHandler<UpdateAppointmentCommand, AppointmentModel>, UpdateAppointmentCommandHandler>();
+            services.AddTransient<IRequestHandler<CreateAppointmentCommand, AppointmentDTO>, CreateAppointmentCommandHandler>();
+            services.AddTransient<IRequestHandler<UpdateAppointmentCommand, AppointmentDTO>, UpdateAppointmentCommandHandler>();
             services.AddTransient<IRequestHandler<GetAppointmentByIdQuery, AppointmentModel>, GetAppointmentByIdQueryHandler>();
             services.AddTransient<IRequestHandler<GetAppointmentsQuery, List<AppointmentModel>>, GetAppointmentsQueryHandler>();
+            services.AddTransient<IRequestHandler<GetConsultantsQuery, List<ConsultantModel>>, GetConsultantsQueryHandler>();
+            services.AddTransient<IRequestHandler<GetConsultantByIdQuery, ConsultantModel>, GetConsultantByIdQueryHandler>();
+            services.AddTransient<IRequestHandler<GetPatientsQuery, List<PatientModel>>, GetPatientsQueryHandler>();
+            services.AddTransient<IRequestHandler<GetPatientByIdQuery, PatientModel>, GetPatientByIdQueryHandler>();
+            services.AddTransient<IRequestHandler<GetTimeSlotsQuery, List<TimeSlotModel>>, GetTimeSlotsQueryHandler>();
+            services.AddTransient<IRequestHandler<GetTimeSlotByIdQuery, TimeSlotModel>, GetTimeSlotByIdQueryHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

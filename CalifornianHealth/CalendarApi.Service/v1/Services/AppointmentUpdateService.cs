@@ -1,4 +1,5 @@
-﻿using CalendarApi.Domain.Models.DTOs;
+﻿using CalendarApi.Data.Interfaces;
+using CalendarApi.Domain.Models.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,15 @@ namespace CalendarApi.Service.v1.Services
 {
     public class AppointmentUpdateService : IAppointmentUpdateService
     {
-        public AppointmentUpdateService()
+        IAppointmentDataHandler _appointmentDataHandler;
+        public AppointmentUpdateService(IAppointmentDataHandler appointmentDataHandler)
         {
-
+            _appointmentDataHandler = appointmentDataHandler;
         }
         public Task SaveAppointment(AppointmentDTO appointment)
         {
-            throw new NotImplementedException();
+            _appointmentDataHandler.SaveAppointment(appointment);
+            return Task.CompletedTask;
         }
     }
 }

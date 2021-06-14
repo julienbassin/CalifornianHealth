@@ -25,6 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BookingApi.Messaging.Send\BookingApi.Messaging.Send.csproj" />
+    <ProjectReference Include="..\CalendarApi.Data\CalendarApi.Data.csproj" />
     <ProjectReference Include="..\CalendarApi.Domain\CalendarApi.Domain.csproj" />
   </ItemGroup>
 

@@ -51,11 +51,6 @@ namespace CalendarApi.Messaging.Receive.Receiver.v1
             _channel.QueueDeclare(queue: _queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
         }
 
-        private void RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             stoppingToken.ThrowIfCancellationRequested();
@@ -94,24 +89,29 @@ namespace CalendarApi.Messaging.Receive.Receiver.v1
             }            
         }
 
+        private void RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs e)
+        {
+
+        }
+
         private void OnConsumerCancelled(object sender, ConsumerEventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
 
         private void OnConsumerUnregistered(object sender, ConsumerEventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
 
         private void OnConsumerRegistered(object sender, ConsumerEventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
 
         private void OnConsumerShutdown(object sender, ShutdownEventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

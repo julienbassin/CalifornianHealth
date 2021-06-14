@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CalendarApi.Data.Migrations
 {
     [DbContext(typeof(CalendarDBContext))]
-    [Migration("20210606143811_Initial")]
-    partial class Initial
+    [Migration("20210613084838_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,7 +36,7 @@ namespace CalendarApi.Data.Migrations
 
                     b.Property<DateTime>("SelectedDate")
                         .HasColumnType("date")
-                        .HasColumnName("StartTime");
+                        .HasColumnName("SelectedDate");
 
                     b.Property<int?>("TimeSlotId")
                         .HasColumnType("int");

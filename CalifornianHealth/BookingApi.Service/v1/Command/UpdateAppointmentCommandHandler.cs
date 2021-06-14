@@ -1,4 +1,5 @@
-﻿using CalendarApi.Domain.Models.Entities;
+﻿using CalendarApi.Domain.Models.DTOs;
+using CalendarApi.Domain.Models.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BookingApi.Service.v1.Command
 {
-    public class UpdateAppointmentCommandHandler : IRequestHandler<UpdateAppointmentCommand, AppointmentModel>
+    public class UpdateAppointmentCommandHandler : IRequestHandler<UpdateAppointmentCommand, AppointmentDTO>
     {
         // Implement IUnitOfWork
         public UpdateAppointmentCommandHandler()
@@ -17,7 +18,7 @@ namespace BookingApi.Service.v1.Command
 
         }
 
-        public Task<AppointmentModel> Handle(UpdateAppointmentCommand request, CancellationToken cancellationToken)
+        public Task<AppointmentDTO> Handle(UpdateAppointmentCommand request, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

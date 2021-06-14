@@ -34,7 +34,7 @@ namespace CalendarApi.Data.Migrations
 
                     b.Property<DateTime>("SelectedDate")
                         .HasColumnType("date")
-                        .HasColumnName("StartTime");
+                        .HasColumnName("SelectedDate");
 
                     b.Property<int?>("TimeSlotId")
                         .HasColumnType("int");

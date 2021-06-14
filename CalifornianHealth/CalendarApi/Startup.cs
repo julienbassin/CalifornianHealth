@@ -1,6 +1,10 @@
+using CalendarApi.Data.Config;
 using CalendarApi.Data.Database;
+using CalendarApi.Data.Interfaces;
 using CalendarApi.Data.Repository;
 using CalendarApi.Messaging.Receive.Options.v1;
+using CalendarApi.Messaging.Receive.Receiver.v1;
+using CalendarApi.Service.v1.Services;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -54,6 +58,12 @@ namespace CalendarApi
 
             // Data Repository
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            services.AddTransient<IAppointmentUpdateService, AppointmentUpdateService>();
+            services.AddTransient<IAppointmentDataHandler, AppointmentDataHandler>();
+
+            services.AddHostedService<AppointmentUpdateReceiver>();
 
             services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(typeof(Startup));

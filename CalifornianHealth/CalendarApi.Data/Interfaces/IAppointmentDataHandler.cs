@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookingApi.Messaging.Send.Sender.v1
+namespace CalendarApi.Data.Interfaces
 {
-    public interface IAppointmentUpdateSender
+    public interface IAppointmentDataHandler
     {
-        void Send(AppointmentDTO appointmentDTO);
+        Task SaveAppointment(AppointmentDTO appointmentModel);
     }
 }
