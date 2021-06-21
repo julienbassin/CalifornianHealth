@@ -11,6 +11,11 @@ namespace CalendarApi.Data.Database
 {
     public class CalendarDBContext : DbContext
     {
+
+        public CalendarDBContext()
+        {
+        }
+
         public CalendarDBContext(DbContextOptions<CalendarDBContext> options) : base(options) { }
 
         public DbSet<PatientModel> Patients { get; set; }
